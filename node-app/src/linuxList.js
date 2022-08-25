@@ -1,4 +1,5 @@
 const { exec } = require("child_process");
+const fs = require("fs");
 
 const getAllInstalledSoftware = async () => {
     return new Promise ((resolve, reject) => {
@@ -13,7 +14,8 @@ const getAllInstalledSoftware = async () => {
                     let obj = {
                         softwareName: software_version_date[i][0],
                         version: software_version_date[i][1],
-                        dateInstalled: software_version_date[i][2]
+                        dateInstalled: software_version_date[i][2],
+                        uninstallString: software_version_date[i][0]
                     }
                     response.push(obj);
                 }
@@ -80,6 +82,34 @@ function getVersionDate(desktopSoftwares){
     })
 };
 
+const uninstallSoftware = (uninstallString) => {
+    //uninstall windows program with uninstallString
+    uninstallCommand="apt-get remove "+uninstallString+" -y";
+    //write this command to file and run it
+    fs.writeFileSync("./src/uninstallSoftware.sh",uninstallCommand);
+    uninstallCommand='./src/uninstallSoftware.sh'
+    console.log(uninstallCommand);
+    return new Promise((resolve, reject) => {
+        //exec to run .cmd file
+        exec(uninstallCommand, (error, stdout, stderr) => {
+            if (error) {
+                console.log("error", error);
+                reject({"err":  "Failed to uninstall"});
+                return;
+            }
+            if (stderr) {
+                console.log("stderr",stderr);
+                reject({"err: " : stderr});
+                return;
+            }
+            console.log("stdout",stdout);
+            console.log("Uninstalled Successfully");
+            resolve({"res": "sucess"});
+        })
+    });
+}
+
 module.exports = exports = {
-    getAllInstalledSoftware: getAllInstalledSoftware
+    getAllInstalledSoftware: getAllInstalledSoftware,
+    uninstallSoftware: uninstallSoftware
 };
