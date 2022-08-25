@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <title>IP Configuration!</title>
+  </head>
+  <body>
+    <h1>Configure IP first Time</h1>
+    <div>
+        <input
+          type="text"
+          minlength="7"
+          maxlength="15"
+          size="15"
+          pattern="^((\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$"
+          class="form-control"
+          placeholder="Enter the IP Address"
+          name="ip"
+          id="inputIP"
+        />
+        <button id="btnInsertIP">Configure</button>
+    </div>
+    <script src="./login.js"></script>
+  </body>
+</html>
