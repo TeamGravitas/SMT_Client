@@ -94,35 +94,103 @@ const processCmdOutput = (fullList) => {
 
 
 
-const getAllInstalledSoftware = () => {
-    return new Promise ((resolve, reject) => {
-        getAllInstalledSoftwareHelper()
-            .then((x) => {
-                let y = [];
-                // console.log(x);
-                x.forEach(e => {
-                    if (e.DisplayName && e.InstallDate && e.InstallDate.length > 0){
-                        let obj={
-                            softwareName:e.DisplayName ,
-                            version:  e.DisplayVersion,
-                            dateInstalled: e.InstallDate
-                        }
-                        y.push(obj);
-                    }
-                });
-                // console.log(y);
-                y={
-                    "res": y
-                };
-                resolve(JSON.stringify(y));
-        });
-    });
-};
+// const getAllInstalledSoftware = () => {
+//     return new Promise ((resolve, reject) => {
+//         getAllInstalledSoftwareHelper()
+//             .then((x) => {
+//                 let y = [];
+//                 // console.log(x);
+//                 x.forEach(e => {
+//                     if (e.DisplayName && e.InstallDate && e.InstallDate.length > 0){
+//                         let obj={
+//                             softwareName:e.DisplayName ,
+//                             version:  e.DisplayVersion,
+//                             dateInstalled: e.InstallDate
+//                         }
+//                         y.push(obj);
+//                     }
+//                 });
+//                 // console.log(y);
+//                 y={
+//                     "res": y,
+//                     "os": "win"
+//                 };
+//                 resolve(JSON.stringify(y));
+//         });
+//     });
+// };
 
-module.exports = exports = {
-    getAllInstalledSoftware: getAllInstalledSoftware
-};
 
 // {
 //     getAllInstalledSoftware();   
 // }
+
+
+const getAllInstalledSoftware = () => {
+    return new Promise((resolve, reject) => {
+        //exec to run .cmd file
+        exec(".\\src\\"+'getInstalledSoftware.cmd', (error, stdout, stderr) => {
+            if (stderr) {
+                reject(console.log(`stderr: ${stderr}`));
+                // return;
+            }
+            // softwares = stdout;
+            str = stdout.split('\n');
+            // console.log("Here",str);
+            softwares = new Array()
+            let count=0;
+            for(let i=5;i<str.length;i+=8){
+                let valid = true;
+                for(let j=0;j<7;j++){
+                    if(str[i+j]==undefined || (str[i+j].split(':')[1])==undefined){
+                        valid = false;
+                        break;
+                    }
+                    // if(++count<50)
+                    //     console.log(str[i+j]);
+                }
+                if(!valid)
+                    continue;
+                let obj={
+                    softwareName:(str[i].split(':')[1]).trim(),
+                    version:(str[i+1].split(':')[1]).trim(),
+                    // uninstallString:(str[i+2].split(':')[1]).trim(),
+                    uninstallString: (str[i+2].slice(17)).trim(),
+                    dateInstalled:(str[i+3].split(':')[1]).trim(),
+                    estimatedSize:(str[i+4].split(':')[1]).trim(),
+                    systemComponent:(str[i+5].split(':')[1]).trim()
+                }
+                // console.log(obj);
+                if(obj.systemComponent!='1'){
+                    if(obj.dateInstalled.length>0){
+                        let temp=obj.dateInstalled;
+                        //format date to dd-mm-yyyy
+                        obj.dateInstalled=temp.slice(6,8)+"-"+temp.slice(4,6)+"-"+temp.slice(0,4);
+                        // obj.dateInstalled=temp.slice(0,temp.length-1);
+                    }
+                    softwares.push(obj);
+                }
+
+            }
+            // console.log(softwares);
+            y=softwares;
+            y={
+                "res": y,
+                "os": "win"
+            };
+            resolve(JSON.stringify(y));
+            // resolve(softwares);
+        });
+       
+    })
+}
+
+
+// testSoftware();
+// exec('ls',{'shell'})
+getAllInstalledSoftware();
+
+
+module.exports = exports = {
+    getAllInstalledSoftware: getAllInstalledSoftware
+};

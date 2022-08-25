@@ -25,8 +25,10 @@ app.get('/installedSoftware', async (req, res) => {
     ip4=ip4[ip4.length - 1];
     console.log("Request from IP : " + ip4);
     console.log("Auth IP from local storage : " + localStorage.getItem("ip"));
-    
-    if (ip4 != localStorage.getItem("ip")) {
+    let unauthorizedFlag = (ip4 != localStorage.getItem("ip"));
+    // unauthorizedFlag=false //Remove this true to enable authorization
+ 
+    if (unauthorizedFlag) {
         console.log("Unauthorized request from " + req.ip);
         res.json({ "err": "unauthorized" })
         return;
