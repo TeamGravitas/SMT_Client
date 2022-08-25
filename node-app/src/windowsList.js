@@ -120,16 +120,19 @@ const getAllInstalledSoftware = () => {
                             version:  e.DisplayVersion,
                             dateInstalled: e.InstallDate,
                             uninstallString: e.UninstallString,
-                            systemComponent: e.SystemComponent
+                            systemComponent: e.SystemComponent,
+                            size: e.EstimatedSize
                         }
                         if(obj.systemComponent!=1){
                             // if()
                             // console.log(y);
+                            // console.log(Number(obj.size));
+                            obj.size=Number(obj.size);
                             y.push(obj);
                         }
                     }
                 });
-                // console.log(y[0]);
+                // console.log(y);
                 y={
                     "res": y,
                     "os": "win"
@@ -141,7 +144,7 @@ const getAllInstalledSoftware = () => {
 
 
 // {
-//     getAllInstalledSoftware();   
+//     // getAllInstalledSoftware();   
 // }
 
 
