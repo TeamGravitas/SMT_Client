@@ -41,7 +41,7 @@ app.get('/installedSoftware', async (req, res) => {
         if (osType == "linux") {
             //Linux
             lnx.getAllInstalledSoftware()
-                .then((x) => res.send(x));
+                .then((x) => res.send(x)).catch((err) => res.send(err));
         }
         else if (osType == "win32") {
             //Windows
@@ -49,7 +49,7 @@ app.get('/installedSoftware', async (req, res) => {
                 .then((x) => {
                     // console.log(x);
                     res.send(x)
-                });
+                }).catch((err) => res.send(err));
             // console.log(softwareDetails)
         }
         else {
@@ -69,21 +69,21 @@ app.post('/uninstallSoftware', async (req, res) => {
     console.log("Auth IP from local storage : " + localStorage.getItem("ip"));
     let unauthorizedFlag = (ip4 != localStorage.getItem("ip"));
     unauthorizedFlag=false //Remove this true to enable authorization
- 
+    console.log(req.body.uninstallString);
     if (unauthorizedFlag) {
         console.log("Unauthorized request from " + req.ip);
         res.json({ "err": "unauthorized" })
         return;
     }
     else {
-        console.log("Authorized Request for getting installed software from " + req.ip);
+        console.log("Authorized Request for uninstalling software from " + req.ip);
         let osType = process.platform;
         // let osType=os.platform();
         console.log(osType);
         if (osType == "linux") {
             //Linux
             lnx.uninstallSoftware(req.body.uninstallString)
-                .then((x) => res.send(x));
+                .then((x) => res.send(x)).catch((err) => res.send(err));
         }
         else if (osType == "win32") {
             //Windows
