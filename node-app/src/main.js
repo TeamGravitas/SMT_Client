@@ -26,7 +26,7 @@ app.get('/installedSoftware', async (req, res) => {
     console.log("Request from IP : " + ip4);
     console.log("Auth IP from local storage : " + localStorage.getItem("ip"));
     let unauthorizedFlag = (ip4 != localStorage.getItem("ip"));
-    // unauthorizedFlag=false //Remove this true to enable authorization
+    unauthorizedFlag=false //Remove this true to enable authorization
  
     if (unauthorizedFlag) {
         console.log("Unauthorized request from " + req.ip);
@@ -46,7 +46,10 @@ app.get('/installedSoftware', async (req, res) => {
         else if (osType == "win32") {
             //Windows
             win.getAllInstalledSoftware()
-                .then((x) => res.send(x));
+                .then((x) => {
+                    // console.log(x);
+                    res.send(x)
+                });
             // console.log(softwareDetails)
         }
         else {
