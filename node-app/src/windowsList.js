@@ -103,6 +103,15 @@ const getAllInstalledSoftware = () => {
         getAllInstalledSoftwareHelper()
             .then((x) => {
                 let y = [];
+                
+                let obj={
+                    softwareName:"VLC media player" ,
+                    version: "3.0.16",
+                    dateInstalled: 20220204,
+                    uninstallString: '"C:\\Program Files\\VideoLAN\\VLC\\uninstall.exe"',
+                    systemComponent: 0
+                }
+                y.push(obj);
                 // console.log(x);
                 x.forEach(e => {
                     if (e.DisplayName && e.InstallDate && e.InstallDate.length > 0){
@@ -120,7 +129,7 @@ const getAllInstalledSoftware = () => {
                         }
                     }
                 });
-                // console.log(y);
+                // console.log(y[0]);
                 y={
                     "res": y,
                     "os": "win"
@@ -221,7 +230,60 @@ const getAllInstalledSoftware = () => {
 // // exec('ls',{'shell'})
 // getAllInstalledSoftware();
 
+// if (`${uninstallString}` -like "msiexec*") {$ARGS=(`${uninstallString}` -split ' ')[1] -replace '/I','/X ') + ' /q' Start-Process msiexec.exe -ArgumentList $ARGS -Wait} else { $UNINSTALL_COMMAND=(`${uninstallString}` -split '\"')[1])$UNINSTALL_ARGS=(`${uninstallString}` -split '\"')[2]) + ' /S'Start-Process $UNINSTALL_COMMAND -ArgumentList $UNINSTALL_ARGS -Wait}
 
+// `if (${uninstallString} -like 'msiexec*') {   $ARGS=((${uninstallString} -split ' ')[1] -replace '/I','/X ') + ' /q' Start-Process msiexec.exe -ArgumentList $ARGS -Wait } else { $UNINSTALL_COMMAND=((${uninstallString} -split '\"')[1]) $UNINSTALL_ARGS=((${uninstallString} -split '\"')[2]) + ' /S' Start-Process $UNINSTALL_COMMAND -ArgumentList $UNINSTALL_ARGS -Wait}`
+
+
+const uninstallSoftware = (uninstallString) => {
+    //uninstall windows program with uninstallString
+    uninstallCommand=getUninstallCommand(uninstallString);
+    console.log(uninstallCommand);
+    return new Promise((resolve, reject) => {
+        //exec to run .cmd file
+        exec(uninstallCommand, (error, stdout, stderr) => {
+            if (error) {
+                console.log("error", error);
+                reject({"err":  "Failed to uninstall"});
+                return;
+            }
+            if (stderr) {
+                console.log("stderr",stderr);
+                reject({"err: " : stderr});
+                return;
+            }
+            console.log("Uninstalled Successfully");
+            resolve({"res": "sucess"});
+        })
+    });
+    // uninstallCommand=`if (${uninstallString} -like 'msiexec*') {   $ARGS=((${uninstallString} -split ' ')[1] -replace '/I','/X ') + ' /q' Start-Process msiexec.exe -ArgumentList $ARGS -Wait } else { $UNINSTALL_COMMAND=((${uninstallString} -split '\"')[1]) $UNINSTALL_ARGS=((${uninstallString} -split '\"')[2]) + ' /S' Start-Process $UNINSTALL_COMMAND -ArgumentList $UNINSTALL_ARGS -Wait}`;
+   
+};
+
+// uninstallSoftware('\"C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\104.1.42.97\\Installer\\setup.exe\" --uninstall --system-level');
+
+// uninstallSoftware('\"C:\\Program Files\\VideoLAN\\VLC\\uninstall.exe\" --uninstall --system-level');
+// uninstallSoftware(`MsiExec.exe /I{B206C51C-27D2-4251-95E2-B4B28DE80633}`)
+
+// .catch(x=>console.log(x));
+// MsiExec.exe /I{E98621B6-AA42-4390-93AF-4C3D2C557258}
+function getUninstallCommand(uninstallString){
+    // let uninstallString=uninstallObject.unistallString;
+    // let uninstallName=uninstallObject.uninstallName;
+
+    let command='';
+    if(uninstallString.search("MsiExec")!=-1){
+        uninstallString = uninstallString.split(' ')[1];
+        let id=uninstallString.split('{')[1].split('}')[0];
+
+        command= `winget uninstall --id "{${id}}" -h --accept-source-agreements`;
+        // console.log(command);
+    }
+    else
+        command = uninstallString+' /S';
+    return command;
+}
 module.exports = exports = {
-    getAllInstalledSoftware: getAllInstalledSoftware
+    getAllInstalledSoftware: getAllInstalledSoftware,
+    uninstallSoftware: uninstallSoftware
 };

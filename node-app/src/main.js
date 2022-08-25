@@ -60,6 +60,49 @@ app.get('/installedSoftware', async (req, res) => {
     // res.send("OK");
 });
 
+app.post('/uninstallSoftware', async (req, res) => {
+    //check is request is from authorized IP address
+    let ip =  req.ip;
+    let ip4 = ip.split(":");
+    ip4=ip4[ip4.length - 1];
+    console.log("Request from IP : " + ip4);
+    console.log("Auth IP from local storage : " + localStorage.getItem("ip"));
+    let unauthorizedFlag = (ip4 != localStorage.getItem("ip"));
+    unauthorizedFlag=false //Remove this true to enable authorization
+ 
+    if (unauthorizedFlag) {
+        console.log("Unauthorized request from " + req.ip);
+        res.json({ "err": "unauthorized" })
+        return;
+    }
+    else {
+        console.log("Authorized Request for getting installed software from " + req.ip);
+        let osType = process.platform;
+        // let osType=os.platform();
+        console.log(osType);
+        if (osType == "linux") {
+            //Linux
+            lnx.uninstallSoftware(req.body.uninstallString)
+                .then((x) => res.send(x));
+        }
+        else if (osType == "win32") {
+            //Windows
+            win.uninstallSoftware(req.body.uninstallString)
+                .then((x) => {
+                    res.send(x)
+                })
+                .catch((err) => {
+                    // console.log(err);
+                    res.send(err);
+                });
+            // console.log(softwareDetails)
+        }
+        else {
+            res.send("Unsupported OS");
+        }
+    }  
+})
+
 app.get('/home', (req, res) => {
     res.send("HomePage")
 });
