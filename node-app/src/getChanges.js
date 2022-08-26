@@ -9,10 +9,22 @@ exports.getChanges = async (selfIp, isAdmin=0)=>{
         let osType = process.platform;
         if (osType == "linux") {
             //Linux
-            // lnx.getAllInstalledSoftware()
+            lnx.getAllInstalledSoftware()
+            .then((x) => {
+                // console.log(x);
+                x=JSON.parse(x);
+                getChangesHelper(x,selfIp,isAdmin)
+                .then((y)=>{
+                    resolve({"res":y});
+                })
+                .catch((err)=>{
+                    reject(err);
+                })
+            })
+            .catch((err) => reject(err));
             //     .then((x) => res.send(x)).catch((err) => res.send(err));
-            obj ={"res": []};
-            resolve(obj);
+            // obj ={"res": []};
+            // resolve(obj);
         }
         else if (osType == "win32") {
             //Windows
