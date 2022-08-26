@@ -1,8 +1,7 @@
-GET http://localhost:3000/users
-
+GET http://192.168.1.7:5000/installedSoftware
 
 ########
-POST  http://192.168.1.7:5000/getChanges
+POST  http://192.168.1.7:5000/uninstallSoftware
 content-type: application/json
 
 {
