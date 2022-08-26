@@ -30,7 +30,7 @@ app.get('/installedSoftware', async (req, res) => {
     console.log("Request from IP : " + ip4);
     console.log("Auth IP from local storage : " + localStorage.getItem("ip"));
     let unauthorizedFlag = (ip4 != localStorage.getItem("ip"));
-    unauthorizedFlag=false //Remove this true to enable authorization
+    // unauthorizedFlag=false //Remove this true to enable authorization
  
     if (unauthorizedFlag) {
         console.log("Unauthorized request from " + req.ip);
@@ -75,7 +75,7 @@ app.post('/getChanges', async (req, res) => {
     console.log("Changes Requested from IP : " + ip4);
     console.log("Auth IP from local storage : " + localStorage.getItem("ip"));
     let unauthorizedFlag = (ip4 != localStorage.getItem("ip"));
-    unauthorizedFlag=false //Remove this true to enable authorization
+    // unauthorizedFlag=false //Remove this true to enable authorization
  
     if (unauthorizedFlag) {
         console.log("Unauthorized request from " + req.ip);
@@ -107,7 +107,7 @@ app.post('/uninstallSoftware', async (req, res) => {
     console.log("Request from IP : " + ip4);
     console.log("Auth IP from local storage : " + localStorage.getItem("ip"));
     let unauthorizedFlag = (ip4 != localStorage.getItem("ip"));
-    unauthorizedFlag=false //Remove this true to enable authorization
+    // unauthorizedFlag=false //Remove this true to enable authorization
     console.log(req.body.uninstallString);
     if (unauthorizedFlag) {
         console.log("Unauthorized request from " + req.ip);
