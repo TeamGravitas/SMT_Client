@@ -8,6 +8,7 @@ const e = require('express');
 const sftop = require("./dbModel/softwarelistmgr");
 const malop = require("./dbModel/maliciousSoftwareList");
 const chg = require("./getChanges");
+const { schedulerHelper } = require("./scheduler.js");
 //Setting local storage for node, so that can store authorized IP address
 var LocalStorage = require('node-localstorage').LocalStorage;
 let localStorage
@@ -180,6 +181,7 @@ async function createTables() {
 app.listen(5000,async (e) => {
     await createTables();
     console.log(`listening on port 5000`);
+    schedulerHelper();
 });
 
 
