@@ -5,6 +5,9 @@ const lnx = require('./linuxList.js');
 const { exec } = require("child_process");
 const os = require("os");
 const e = require('express');
+const sftop = require("./dbModel/softwarelistmgr");
+const malop = require("./dbModel/maliciousSoftwareList");
+const chg = require("./getChanges");
 //Setting local storage for node, so that can store authorized IP address
 var LocalStorage = require('node-localstorage').LocalStorage;
 let localStorage
@@ -48,6 +51,7 @@ app.get('/installedSoftware', async (req, res) => {
             win.getAllInstalledSoftware()
                 .then((x) => {
                     // console.log(x);
+
                     res.send(x)
                 }).catch((err) => res.send(err));
             // console.log(softwareDetails)
@@ -55,6 +59,40 @@ app.get('/installedSoftware', async (req, res) => {
         else {
             res.send("Unsupported OS");
         }
+    }
+
+    // res.send("OK");
+});
+
+app.post('/getChanges', async (req, res) => {
+    //check is request is from authorized IP address
+    let ip =  req.ip;
+    let ip4 = ip.split(":");
+    ip4=ip4[ip4.length - 1];
+    let selfIp = req.body.ip;
+    console.log("This is my ip: ",selfIp);
+    console.log("Changes Requested from IP : " + ip4);
+    console.log("Auth IP from local storage : " + localStorage.getItem("ip"));
+    let unauthorizedFlag = (ip4 != localStorage.getItem("ip"));
+    unauthorizedFlag=false //Remove this true to enable authorization
+ 
+    if (unauthorizedFlag) {
+        console.log("Unauthorized request from " + req.ip);
+        res.json({ "err": "unauthorized" })
+        return;
+    }
+    else {
+        console.log("Authorized Request for getting installed software from " + req.ip);
+        let osType = process.platform;
+        // let osType=os.platform();
+        console.log(osType);
+        chg.getChanges(selfIp,1)
+        .then((y)=>{
+            res.send(y);
+        })
+        .catch((err)=>{
+            res.send(err);
+        });
     }
 
     // res.send("OK");
@@ -130,11 +168,19 @@ app.post('/insertIP', (req, res) => {
 
 });
 
-app.listen(5000, (e) => {
+async function createTables() {
+    await sftop.createSoftwareTable();
+    await malop.createMaliciousSoftwareTable();
+    await malop.fillMaliciouTable();
+    // .catch(()=>{
+    //     console.log("Entries already filled in malicious dataset!");
+    // });
+}
+
+app.listen(5000,async (e) => {
+    await createTables();
     console.log(`listening on port 5000`);
 });
-
-
 
 
 
