@@ -5,7 +5,7 @@
   "main": "./src/main.js",
   "scripts": {
     "start": "electron .",
-    "package-win": "electron-packager . node-app --overwrite --asar=true --platform=win32 --arch=ia32 --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"GRAVITAS_SIH_Node\"",
+    "package-win": "electron-packager . node-app --overwrite --asar=true --platform=win32 --arch=x64 --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"GRAVITAS_SIH_Node\"",
     "package-linux": "electron-packager . node-app --overwrite --asar=true --platform=linux --arch=x64 --prune=true --out=release-builds"
   },
   "author": "GRAVITAS",
@@ -17,6 +17,10 @@
   "dependencies": {
     "child_process": "^1.0.2",
     "express": "^4.18.1",
-    "node-localstorage": "^2.2.1"
+    "ip": "^2.0.0",
+    "node-localstorage": "^2.2.1",
+    "node-schedule": "^2.1.0",
+    "nodemailer": "^6.7.8",
+    "sqlite3": "^5.0.11"
   }
 }

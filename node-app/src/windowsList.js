@@ -104,14 +104,14 @@ const getAllInstalledSoftware = () => {
             .then((x) => {
                 let y = [];
                 
-                let obj={
-                    softwareName:"VLC media player" ,
-                    version: "3.0.16",
-                    dateInstalled: 20220204,
-                    uninstallString: '"C:\\Program Files\\VideoLAN\\VLC\\uninstall.exe"',
-                    systemComponent: 0
-                }
-                y.push(obj);
+                // let obj={
+                //     softwareName:"VLC media player" ,
+                //     version: "3.0.16",
+                //     dateInstalled: 20220204,
+                //     uninstallString: '"C:\\Program Files\\VideoLAN\\VLC\\uninstall.exe"',
+                //     systemComponent: 0
+                // }
+                // y.push(obj);
                 // console.log(x);
                 x.forEach(e => {
                     if (e.DisplayName && e.InstallDate && e.InstallDate.length > 0){

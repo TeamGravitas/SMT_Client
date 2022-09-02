@@ -1,0 +1,42 @@
+GET http://192.168.1.7:5000/installedSoftware
+
+########
+POST  http://192.168.1.7:5000/uninstallSoftware
+content-type: application/json
+
+{
+    "ip": "192.168.1.7"
+
+}
+
+#######
+POST http://localhost:3000/users/login 
+content-type: application/json
+
+{
+    "username": "admin",
+    "password": "123"
+
+}
+
+#######
+PUT http://localhost:3000/users/changePassword
+content-type: application/json
+
+{
+    "username": "admin",
+    "password": "125"
+
+}
+
+#######
+POST http://localhost:3000/users/register 
+content-type: application/json
+
+{
+    "username": "admin",
+    "password": "123"
+
+}
+#############
+POST http://localhost:3000/users 

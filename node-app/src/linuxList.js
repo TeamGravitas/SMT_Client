@@ -19,8 +19,8 @@ const getAllInstalledSoftware = async () => {
                     }
                     response.push(obj);
                 }
-                obj ={
-                    "res": obj,
+                response ={
+                    "res": response,
                     "os": "lin"
                 };
                 return JSON.stringify(response);
